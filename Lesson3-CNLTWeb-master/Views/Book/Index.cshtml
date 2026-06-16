@@ -1,0 +1,50 @@
+@model IEnumerable<Lesson3_CNLTWeb.Models.Book>
+
+<div class="container mt-4">
+    <h2>Danh sách Sách</h2>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <a asp-action="Create" class="btn btn-primary">Thêm sách mới</a>
+        </div>
+        <div class="col-md-6">
+            <form asp-action="Index" method="get" class="d-flex">
+                <input type="text" name="searchString" value="@ViewBag.CurrentFilter" class="form-control me-2" placeholder="Tìm tên sách hoặc tác giả..." />
+                <button type="submit" class="btn btn-secondary">Tìm kiếm</button>
+            </form>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Id</th>
+                <th>Tiêu đề</th>
+                <th>Tác giả</th>
+                <th>
+                    <!-- Link để sắp xếp -->
+                    <a asp-action="Index" asp-route-sortOrder="@ViewBag.PriceSortParam" asp-route-searchString="@ViewBag.CurrentFilter" class="text-white text-decoration-none">
+                        Giá tiền ↕
+                    </a>
+                </th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Title</td>
+                    <td>@item.Author</td>
+                    <td>@item.Price.ToString("N0") VNĐ</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Sửa</a>
+                        <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-info">Chi tiết</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Xóa</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
