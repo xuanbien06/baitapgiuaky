@@ -1,0 +1,37 @@
+@model Lesson3_ORM_BookManagement.Models.RoomImage_BIT240041
+@{
+    ViewData["Title"] = "Upload Ảnh";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-success text-white py-3">
+                <h4 class="mb-0 fw-bold"><i class="bi bi-cloud-arrow-up"></i> Tải Ảnh Lên Cho: @ViewBag.RoomName</h4>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="RoomId" />
+
+                    <div class="mb-4">
+                        <label asp-for="ImageFile" class="form-label fw-bold">Chọn ảnh từ thiết bị của bạn:</label>
+                        <input asp-for="ImageFile" type="file" accept="image/*" class="form-control" required />
+                    </div>
+
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input fs-5" type="checkbox" asp-for="IsThumbnail">
+                        <label class="form-check-label fs-5 ms-2 text-primary fw-bold" asp-for="IsThumbnail">
+                            <i class="bi bi-star-fill"></i> Đặt làm ảnh đại diện
+                        </label>
+                    </div>
+
+                    <hr class="my-4">
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" asp-route-roomId="@Model.RoomId" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Hủy bỏ</a>
+                        <button type="submit" class="btn btn-success px-4"><i class="bi bi-upload"></i> Tải ảnh lên</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

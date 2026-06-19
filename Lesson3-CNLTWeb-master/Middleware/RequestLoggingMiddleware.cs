@@ -11,33 +11,18 @@
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            var method = context.Request.Method;
             var path = context.Request.Path.ToString();
 
-            // chỉ ghi log với CRUD Book, lọc bỏ log các path bootstrap, jquery, css, js
-            if (path.Contains("/Book"))
-            {
-                Console.WriteLine($"[Time before action: {time}] Method: {method} - Path: {path}");
-            }
-            
+            // Chỉ chặn nếu đường dẫn là Book/Detail bị lỗi
             if (path == "/Book/Detail/0" || path == "/Book/Detail/-1")
             {
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync("Book id khong hop le");
-                return;
+                return; // Dừng lại, không cho đi tiếp
             }
 
+            // BẮT BUỘC PHẢI CÓ DÒNG NÀY: Cho phép các request (như RoomTypes) đi qua
             await _next(context);
-
-            if (path.Contains("/Book"))
-            {
-                var timeAfter = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
-                Console.WriteLine($"Time After action: [{timeAfter}]");
-            }
-
-                
         }
     }
 }

@@ -1,0 +1,56 @@
+@model IEnumerable<Lesson3_ORM_BookManagement.Models.RoomImage_BIT240041>
+@{
+    ViewData["Title"] = "Quản lý Ảnh";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="text-primary fw-bold"><i class="bi bi-images"></i> Quản lý Ảnh</h2>
+        <h5 class="text-muted">Phòng: <span class="fw-bold text-dark">@ViewBag.RoomName</span></h5>
+    </div>
+    <div>
+        <a asp-controller="Rooms" asp-action="Index" class="btn btn-outline-secondary me-2"><i class="bi bi-arrow-left"></i> Về danh sách Phòng</a>
+        <a asp-action="Create" asp-route-roomId="@ViewBag.RoomId" class="btn btn-success shadow-sm"><i class="bi bi-plus-circle"></i> Thêm Ảnh (URL)</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    @if (!Model.Any())
+    {
+        <div class="col-12 text-center py-5 bg-light rounded shadow-sm">
+            <h4 class="text-danger"><i class="bi bi-camera"></i> Phòng này chưa có ảnh nào!</h4>
+        </div>
+    }
+    else
+    {
+        foreach (var item in Model)
+        {
+            <div class="col-md-4 col-lg-3">
+                <div class="card h-100 shadow-sm border-0 @(item.IsThumbnail ? "border border-2 border-primary" : "")">
+                    <img src="@item.ImageUrl" class="card-img-top" alt="Room Image" style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;" onerror="this.src='https://via.placeholder.com/400x300?text=Lỗi+Load+Ảnh'" />
+
+                    @if (item.IsThumbnail)
+                    {
+                        <span class="badge bg-primary position-absolute top-0 end-0 m-2 shadow"><i class="bi bi-star-fill"></i> Ảnh đại diện</span>
+                    }
+
+                    <div class="card-body p-2 d-flex justify-content-between align-items-center bg-light">
+                        <form asp-action="SetThumbnail" method="post" class="m-0">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <input type="hidden" name="roomId" value="@item.RoomId" />
+                            <button type="submit" class="btn btn-sm @(item.IsThumbnail ? "btn-primary disabled" : "btn-outline-primary")" @(item.IsThumbnail ? "disabled" : "")>
+                                <i class="bi bi-star"></i> Đặt làm đại diện
+                            </button>
+                        </form>
+
+                        <form asp-action="Delete" method="post" class="m-0" onsubmit="return confirm('Bạn có chắc muốn xóa ảnh này?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <input type="hidden" name="roomId" value="@item.RoomId" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

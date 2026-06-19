@@ -14,9 +14,13 @@ public class RoomTypesController : Controller
     }
 
     // GET: ROOMTYPE_BIT240041S
-    public async Task<IActionResult> Index()    
+    public async Task<IActionResult> Index()
     {
-        return View(await _context.RoomTypes.ToListAsync());
+        // Thêm Include để load dữ liệu danh sách phòng kèm theo từng loại
+        var roomTypes = await _context.RoomTypes
+                                      .Include(r => r.Rooms)
+                                      .ToListAsync();
+        return View(roomTypes);
     }
 
     // GET: ROOMTYPE_BIT240041S/Details/5
@@ -50,6 +54,8 @@ public class RoomTypesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Name,Rooms")] RoomType_BIT240041 roomtype_bit240041)
     {
+        ModelState.Remove("Rooms");
+
         if (ModelState.IsValid)
         {
             _context.Add(roomtype_bit240041);
@@ -87,6 +93,8 @@ public class RoomTypesController : Controller
             return NotFound();
         }
 
+        ModelState.Remove("Rooms");
+
         if (ModelState.IsValid)
         {
             try
@@ -96,7 +104,7 @@ public class RoomTypesController : Controller
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RoomType_BIT240041Exists(roomtype_bit240041.Id))
+                if (!_context.RoomTypes.Any(r => r.Id == roomtype_bit240041.Id))
                 {
                     return NotFound();
                 }
@@ -110,41 +118,43 @@ public class RoomTypesController : Controller
         return View(roomtype_bit240041);
     }
 
-    // GET: ROOMTYPE_BIT240041S/Delete/5
+    // 1. HÀM GET: CHẶN NGAY LÚC VỪA BẤM NÚT XÓA Ở DANH SÁCH
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
+        if (id == null) return NotFound();
 
-        var roomtype_bit240041 = await _context.RoomTypes
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (roomtype_bit240041 == null)
+        var roomtype_bit240041 = await _context.RoomTypes.FirstOrDefaultAsync(m => m.Id == id);
+        if (roomtype_bit240041 == null) return NotFound();
+
+        // Lắp cảm biến kiểm tra vào hàm GET
+        bool isUsedByRooms = await _context.Rooms.AnyAsync(r => r.RoomTypeId == id);
+        if (isUsedByRooms)
         {
-            return NotFound();
+            ViewBag.ErrorMessage = $"Không thể xóa loại phòng '{roomtype_bit240041.Name}' vì đang có phòng trọ thuộc loại này. Vui lòng chuyển loại phòng hoặc xóa các phòng đó trước!";
         }
 
         return View(roomtype_bit240041);
     }
 
-    // POST: ROOMTYPE_BIT240041S/Delete/5
+    // 2. HÀM POST: CHẶN LỚP THỨ 2 ĐỂ BẢO VỆ DATABASE
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int? id)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var roomtype_bit240041 = await _context.RoomTypes.FindAsync(id);
-        if (roomtype_bit240041 != null)
+        if (roomtype_bit240041 == null) return NotFound();
+
+        // Lắp cảm biến kiểm tra vào hàm POST
+        bool isUsedByRooms = await _context.Rooms.AnyAsync(r => r.RoomTypeId == id);
+        if (isUsedByRooms)
         {
-            _context.RoomTypes.Remove(roomtype_bit240041);
+            ViewBag.ErrorMessage = $"Không thể xóa loại phòng '{roomtype_bit240041.Name}' vì đang có phòng trọ thuộc loại này. Vui lòng chuyển loại phòng hoặc xóa các phòng đó trước!";
+            return View(roomtype_bit240041);
         }
 
+        _context.RoomTypes.Remove(roomtype_bit240041);
         await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
 
-    private bool RoomType_BIT240041Exists(int? id)
-    {
-        return _context.RoomTypes.Any(e => e.Id == id);
+        return RedirectToAction(nameof(Index));
     }
 }

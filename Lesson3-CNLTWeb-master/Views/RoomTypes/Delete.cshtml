@@ -1,0 +1,36 @@
+@model Lesson3_ORM_BookManagement.Models.RoomType_BIT240041
+@{
+    ViewData["Title"] = "Xóa Loại Phòng";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger shadow-sm border-0" role="alert">
+                <h4 class="alert-heading fw-bold"><i class="bi bi-x-octagon-fill"></i> Lỗi Ràng Buộc Dữ Liệu!</h4>
+                <p class="fs-6 mt-2">@ViewBag.ErrorMessage</p>
+                <hr>
+                <div class="d-flex justify-content-end mt-3">
+                    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Quay lại an toàn</a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning shadow-sm border-0" role="alert">
+                <h4 class="alert-heading fw-bold"><i class="bi bi-exclamation-triangle-fill"></i> Xóa Loại Phòng!</h4>
+                <p>Bạn có chắc muốn xóa loại phòng <strong class="text-danger">@Model.Name</strong>? Thao tác này không thể hoàn tác.</p>
+                <hr>
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="d-flex justify-content-end gap-2 mt-3">
+                        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-circle"></i> Hủy</a>
+                        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Xác nhận Xóa</button>
+                    </div>
+                </form>
+            </div>
+        }
+    </div>
+</div>

@@ -11,8 +11,7 @@ namespace Lesson3_CNLTWeb.Data
         {
         }
 
-        // Bảng của bài cũ (phải giữ lại để hết 6 lỗi)
-        public DbSet<Book> Books { get; set; }
+       
 
         // 3 Bảng của bài thi giữa kỳ (phải using đúng thư mục Models để hết 3 lỗi)
         public DbSet<RoomType_BIT240041> RoomTypes { get; set; }

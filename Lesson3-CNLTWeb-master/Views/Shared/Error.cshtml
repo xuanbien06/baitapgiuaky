@@ -1,25 +1,43 @@
-﻿@model ErrorViewModel
+﻿@model Lesson3_CNLTWeb.Models.ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "Đã xảy ra lỗi";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<div class="d-flex align-items-center justify-content-center vh-100 bg-light rounded shadow-sm mt-4">
+    <div class="text-center p-5 bg-white rounded-3 shadow border-0" style="max-width: 600px;">
+        <div class="mb-4">
+            @if (ViewBag.StatusCode == "404")
+            {
+                <i class="bi bi-search text-warning" style="font-size: 5rem;"></i>
+            }
+            else
+            {
+                <i class="bi bi-exclamation-triangle text-danger" style="font-size: 5rem;"></i>
+            }
+        </div>
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
+        <h1 class="display-1 fw-bold text-primary">@ViewBag.StatusCode</h1>
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>
+        <h3 class="mb-3 fw-bold text-dark">Ôi hỏng! Có lỗi xảy ra rồi.</h3>
+
+        <p class="lead text-muted mb-5">
+            @ViewBag.ErrorMessage
+        </p>
+
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg px-4 gap-3 shadow-sm">
+                <i class="bi bi-house-door"></i> Về Trang Chủ
+            </a>
+            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg px-4 shadow-sm">
+                <i class="bi bi-arrow-left"></i> Quay lại trang trước
+            </a>
+        </div>
+
+        @if (Model.ShowRequestId)
+        {
+            <p class="text-muted small mt-4">
+                <em>Mã theo dõi hệ thống: @Model.RequestId</em>
+            </p>
+        }
+    </div>
+</div>
